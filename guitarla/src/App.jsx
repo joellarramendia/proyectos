@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Guitar from "./components/Guitar";
 import { db } from "./data/db";
@@ -6,9 +6,18 @@ import { db } from "./data/db";
 
 function App() {
 
+  const initialCart = () => {
+    const localStorageCart = localStorage.getItem('cart'); //Obtener carrito del local storage
+    return localStorageCart ? JSON.parse(localStorageCart) : [];//Verificar si hay carrito en el local storage
+  }
+
   //State
   const [data, setData] = useState([db]); //Data de la base de datos
-  const [cart, setCart] = useState([]); //Carrito de compras
+  const [cart, setCart] = useState(initialCart); //Carrito de compras
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));//Guardar carrito en el local storage
+  }, [cart]);
 
   function addToCart(item) {//Función para agregar al carrito
     const itemExists = cart.findIndex((guitar) => guitar.id === item.id);// Verificar si la guitarra ya está en el carrito
@@ -55,6 +64,8 @@ function App() {
     setCart([]);//Limpiar carrito
     console.log("Carrito limpiado");
   }
+
+ 
 
 
   return (
