@@ -12,7 +12,7 @@ function App() {
   }
 
   //State
-  const [data, setData] = useState([db]); //Data de la base de datos
+  const [data] = useState([db]); //Data de la base de datos
   const [cart, setCart] = useState(initialCart); //Carrito de compras
 
   useEffect(() => {
