@@ -1,15 +1,28 @@
 import {useState} from "react"
+import {v4 as uuidv4} from "uuid"
 import { categories } from "../data/categories"
 import type { Activity } from "../types"
+import type { ActivityActions } from "../reducers/activityReducer"
 
-export default function Form() {
+type FormProps = {
+    dispatch: React.Dispatch<ActivityActions>
+}
 
-    const [activity, setActivity] = useState<Activity>({
-        category: 1,
+// Estado inicial para un nuevo activity. `uuidv4()` genera un id único.
+const initialState : Activity = {
+        id: uuidv4(),
+        category: 1, // 1 representa comida por defecto
         name: '',
         calories: 0
-    })
+    }
 
+export default function Form({dispatch}: FormProps) {
+
+    // Estado local del formulario que representa la actividad que se está creando
+    const [activity, setActivity] = useState<Activity>(initialState)
+
+    // Manejador genérico para inputs/selects. Convierte a número si el campo
+    // es `category` o `calories`, que en el modelo son numéricos.
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
         const isNumberField = ['category', 'calories'].includes(e.target.id)
         setActivity({
@@ -18,16 +31,31 @@ export default function Form() {
         })
     }
 
+    // Validación simple: nombre no vacío y calorías > 0
     const isValidActivity = () => {
         const {name, calories} = activity
-        console.log(name.trim() !== '')
         return name.trim() !== '' && calories > 0
     }
 
+    // Envío del formulario: evita el reload, despacha la acción al reducer
+    // y resetea el formulario con un nuevo id.
+    const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        dispatch({type: 'save-activity', payload: {newActivity: activity}})
+        setActivity({
+            ...initialState,
+            id: uuidv4()
+        })
+    }
+
   return (
-    <form className="space-y-5 bg-white shadow p-10 rounded-lg">
+    // Formulario principal: contiene select para categoría, input para nombre
+    // y input numérico para calorías. El botón de submit se desactiva si la
+    // validación falla.
+    <form className="space-y-5 bg-white shadow p-10 rounded-lg" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1">
             <label htmlFor="category" className="font-bold">Categoria:</label>
+            {/* Select de categorías: el valor viene de `categories` importado */}
             <select
                 className="border border-slate-300 p-2 rounded-lg w-full bg-white" 
                 id="category"
@@ -47,6 +75,7 @@ export default function Form() {
 
         <div className="grid grid-cols-1">
             <label htmlFor="name" className="font-bold">Actividad:</label>
+            {/* Input de texto para el nombre de la actividad */}
             <input 
                 id="name" 
                 type="text"
@@ -59,6 +88,7 @@ export default function Form() {
 
         <div className="grid grid-cols-1">
             <label htmlFor="calories" className="font-bold">Calorias:</label>
+            {/* Input numérico para calorías */}
             <input 
                 id="calories" 
                 type="number"
@@ -69,8 +99,9 @@ export default function Form() {
             />
         </div>
 
+        {/* Botón de envío: texto cambia según categoría y se desactiva si inválido */}
         <input 
-            type="submnit"
+            type="submit"
             className="bg-gray-800 hover:bg-gray-900 w-full p-2 font-bold uppercase text-white disabled:opacity-10"
             value={activity.category === 1 ? 'Guardar Comida' : 'Guardar Ejercicio'}
             disabled={!isValidActivity()}
