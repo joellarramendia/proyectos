@@ -1,1 +1,1 @@
-Calculadora_propinas link: calculaora-propinas-dba987.netlify.app
+calculadora_propinas link= https://calculadora-propinas-dba987.netlify.app/
