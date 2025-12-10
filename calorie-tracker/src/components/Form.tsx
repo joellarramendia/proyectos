@@ -1,11 +1,12 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import {v4 as uuidv4} from "uuid"
 import { categories } from "../data/categories"
 import type { Activity } from "../types"
-import type { ActivityActions } from "../reducers/activityReducer"
+import type { ActivityActions, ActivityState } from "../reducers/activityReducer"
 
 type FormProps = {
     dispatch: React.Dispatch<ActivityActions>
+    state: ActivityState
 }
 
 // Estado inicial para un nuevo activity. `uuidv4()` genera un id único.
@@ -16,10 +17,17 @@ const initialState : Activity = {
         calories: 0
     }
 
-export default function Form({dispatch}: FormProps) {
+export default function Form({dispatch, state}: FormProps) {
 
     // Estado local del formulario que representa la actividad que se está creando
     const [activity, setActivity] = useState<Activity>(initialState)
+
+    useEffect(() => {
+        if(state.activeId) {
+            const selectedActivity = state.activities.filter(stateActivity => stateActivity.id === state.activeId)[0]
+            setActivity(selectedActivity)
+        }
+    }, [state.activeId])
 
     // Manejador genérico para inputs/selects. Convierte a número si el campo
     // es `category` o `calories`, que en el modelo son numéricos.
