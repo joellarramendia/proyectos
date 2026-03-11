@@ -2,12 +2,8 @@ import {useState, useEffect} from "react"
 import {v4 as uuidv4} from "uuid"
 import { categories } from "../data/categories"
 import type { Activity } from "../types"
-import type { ActivityActions, ActivityState } from "../reducers/activityReducer"
+import { useActivity } from "../hooks/useActivity"
 
-type FormProps = {
-    dispatch: React.Dispatch<ActivityActions>
-    state: ActivityState
-}
 
 // Estado inicial para un nuevo activity. `uuidv4()` genera un id único.
 const initialState : Activity = {
@@ -17,7 +13,9 @@ const initialState : Activity = {
         calories: 0
     }
 
-export default function Form({dispatch, state}: FormProps) {
+export default function Form() {
+
+    const { state, dispatch } = useActivity()
 
     // Estado local del formulario que representa la actividad que se está creando
     const [activity, setActivity] = useState<Activity>(initialState)
