@@ -18,17 +18,19 @@ export default function ExpenseForm() {
     })
 
     const [error, setError] = useState('')
-    const { dispatch, state } = useBudget()
+    const [previousAmount, setPreviousAmount] = useState(0)
+    const { dispatch, state, remainingBudget } = useBudget()
 
     useEffect(() => {
-        if(state.editingId) {
+        if (state.editingId) {
             const editingExpense = state.expenses.filter(currentExpense => currentExpense.id === state.editingId)[0]
             setExpense(editingExpense)
-        }``
+            setPreviousAmount(editingExpense.amount)
+        } ``
     }, [state.editingId])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement> | React.ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
-        const {name, value} = e.target
+        const { name, value } = e.target
         const isAmountField = ['amount'].includes(name)
         setExpense({
             ...expense,
@@ -46,13 +48,24 @@ export default function ExpenseForm() {
     const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
         //Validar
-        if(Object.values(expense).includes('')) {
+        if (Object.values(expense).includes('')) {
             setError('Todos los campos son obligatorios')
             return
         }
 
-        //Agregar un nuevo gasto
-        dispatch({type: 'add-expense', payload: {expense}})
+        //Validar que el gasto no sea mayor al presupuesto restante
+        if ((expense.amount - previousAmount) > remainingBudget) {
+            setError('El monto del gasto excede el presupuesto restante')
+            return
+        }
+
+        //Agregar o actualizar gasto
+        if (state.editingId) {
+            dispatch({ type: 'update-expense', payload: { expense: { id: state.editingId, ...expense } } })
+        } else {
+            dispatch({ type: 'add-expense', payload: { expense } })
+
+        }
 
         //Reiniciar el state
         setExpense({
@@ -61,6 +74,7 @@ export default function ExpenseForm() {
             category: '',
             date: new Date()
         })
+        setPreviousAmount(0)
     }
 
     return (
@@ -68,10 +82,10 @@ export default function ExpenseForm() {
             <legend
                 className="uppercase text-center text-2xl font-black border-b-4 border-blue-500 py-2"
             >
-                Nuevo Gasto
+                {state.editingId ? 'Actualizar Gasto' : 'Nuevo Gasto'}
             </legend>
 
-                {error && <ErrorMessage>{error}</ErrorMessage>}
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <div className="flex flex-col gap-2">
                 <label
@@ -132,7 +146,7 @@ export default function ExpenseForm() {
                 </select>
             </div>
 
-                 <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
                 <label
                     htmlFor="amount"
                     className="text-xl"
@@ -149,7 +163,7 @@ export default function ExpenseForm() {
             <input
                 type="submit"
                 className="bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg"
-                value={'Registrar Gasto'}
+                value={state.editingId ? 'Actualizar Gasto' : 'Registrar Gasto'}
             />
         </form>
     )
