@@ -1,9 +1,9 @@
 import axios from "axios"
-import {z} from 'zod'
+import { z } from 'zod'
 // import {object, string, number, parse} from "valibot"
 // import type {InferOutput} from "valibot"
 import type { SeachType } from "../types"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 //TYPE GUARD O ASSERTION
 // function isWeatherResponse(weather: unknown): weather is Weather {
@@ -42,22 +42,27 @@ export type Weather = z.infer<typeof Weather>
 
 // type Weather = InferOutput<typeof WeatherSchema>
 
+const initialState = {
+    name: '',
+    main: {
+        temp: 0,
+        temp_max: 0,
+        temp_min: 0
+    }
+}
 
 
 export default function useWeather() {
 
-    const [weather, setWeather] = useState<Weather>({
-        name: '',
-        main: {
-            temp: 0,
-            temp_max: 0,
-            temp_min: 0
-        }
-    })
+    const [weather, setWeather] = useState<Weather>(initialState)
+
+    const [loading, setLoading] = useState(false)
 
     const fetchWeather = async (search: SeachType) => {
 
         const appId = import.meta.env.VITE_API_KEY
+        setLoading(true)
+        setWeather(initialState)
         try {
             const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${appId}`
             const { data } = await axios(geoUrl)
@@ -85,7 +90,7 @@ export default function useWeather() {
             //Zod
             const { data: weatherResult } = await axios(weatherUrl)
             const result = Weather.safeParse(weatherResult)
-            if(result.success){
+            if (result.success) {
                 setWeather(result.data)
             }
 
@@ -97,11 +102,17 @@ export default function useWeather() {
 
         } catch (error) {
             console.log(error)
+        } finally {
+            setLoading(false)
         }
     }
 
+    const hasWeatherData = useMemo(() => weather.name, [weather])
+
     return {
         weather,
-        fetchWeather
+        loading,
+        fetchWeather,
+        hasWeatherData
     }
 }
