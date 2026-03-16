@@ -1,10 +1,19 @@
+import CriptoSearchForm from "./components/CriptoSearchForm"
 
 
 function App() {
 
   return (
     <>
-      <h1>hola</h1>
+      <div className="container">
+        <h1 className="app-title">
+          Cotizador de <span>Criptomonedas</span>
+
+          <div className="content">
+            <CriptoSearchForm/>
+          </div>
+        </h1>
+      </div>
     </>
   )
 }
