@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Aquí defines tus variables personalizadas */
+  --background-image-header: url('/bg.jpg');
+}
