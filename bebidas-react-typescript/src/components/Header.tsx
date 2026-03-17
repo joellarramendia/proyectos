@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { useAppStore } from "../stores/useAppStore"
 
+
 export default function Header() {
 
     const { pathname } = useLocation()
@@ -9,6 +10,9 @@ export default function Header() {
     const isHome = useMemo(() => pathname === '/', [pathname])
 
     const fetchCategories = useAppStore((state) => state.fetchCategories)
+    const categories = useAppStore((state) => state.categories)
+
+
 
     useEffect(() => {
         fetchCategories()
@@ -54,7 +58,7 @@ export default function Header() {
                                 name="ingredient"
                                 className="p-3 w-full rounded-lg focus:outline-none bg-white"
                                 placeholder="Nombre o Ingrediente. Ej. Vodka, Tequila, Cafe"
-                                
+
                             />
                         </div>
 
@@ -70,15 +74,22 @@ export default function Header() {
                                 id="ingredient"
                                 name="ingredient"
                                 className="p-3 w-full rounded-lg focus:outline-none bg-white"
-                                
                             >
                                 <option value="">-- Seleccione --</option>
+                                {categories.drinks.map(category => (
+                                    <option
+                                        value={category.strCategory}
+                                        key={category.strCategory}
+                                    >
+                                        {category.strCategory}
+                                    </option>
+                                ))}
                             </select>
                         </div>
-                        <input 
-                        type="submit" 
-                        value='Buscar Recetas'
-                        className="cursor-pointer bg-orange-800 hover:bg-orange-900 text-white font-extrabold w-full p-2 rounded-lg uppercase"
+                        <input
+                            type="submit"
+                            value='Buscar Recetas'
+                            className="cursor-pointer bg-orange-800 hover:bg-orange-900 text-white font-extrabold w-full p-2 rounded-lg uppercase"
                         />
                     </form>
                 )}
