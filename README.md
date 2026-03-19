@@ -4,4 +4,5 @@ calorie-tracker = https://calorie-tracker-c1c826.netlify.app/ <br>
 control-gastos-contextAPI = https://control-gastos-contexapi-640914.netlify.app/ <br>
 pacientes-zustand = https://pacientes-zustand-139e91.netlify.app/ <br>
 clima-react-typecript = https://clima-react-typescript-fc5725.netlify.app/ <br>
-cripto-react-typescript = https://cotizador-criptomonedas-2f68f6.netlify.app/ 
+cripto-react-typescript = https://cotizador-criptomonedas-2f68f6.netlify.app/ <br>
+bebidas-react-typescript = https://buscador-de-bebidas-84036d.netlify.app/
