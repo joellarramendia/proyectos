@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState} from "react"
+import { useEffect, useMemo, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { useAppStore } from "../stores/useAppStore"
 
@@ -29,19 +29,19 @@ export default function Header() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement> | React.ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
         setSearchFilters({
             ...searchFilters,
-            [e.target.name] : e.target.value
+            [e.target.name]: e.target.value
         })
     }
 
     const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
-        
-        if(Object.values(searchFilters).includes('')){
+
+        if (Object.values(searchFilters).includes('')) {
             showNotification({
                 text: 'todos los campos son obligatorios',
                 error: true
             })
-            return 
+            return
         }
 
         //Consultar las recetas
@@ -70,12 +70,19 @@ export default function Header() {
                         >
                             Favoritos
                         </NavLink>
+
+                        <NavLink
+                            to="/generate"
+                            className={({ isActive }) => isActive ? 'text-orange-500 uppercase font-bold' : 'text-white uppercase font-bold'}
+                        >
+                            Generar con IA
+                        </NavLink>
                     </nav>
                 </div>
                 {isHome && (
-                    <form 
-                    className="md-w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6"
-                    onSubmit={handleSubmit}
+                    <form
+                        className="md-w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6"
+                        onSubmit={handleSubmit}
                     >
                         <div className="space-y-4 ">
                             <label
