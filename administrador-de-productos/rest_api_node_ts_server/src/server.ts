@@ -7,11 +7,11 @@ import db from "./config/db";
 async function connectDB() {
     try {
         await db.authenticate()
-        db.sync()
-        console.log(colors.magenta.bold('Conexion exitosa'))
+        await db.sync()
+        //console.log(colors.magenta.bold('Conexion exitosa'))
     } catch (error) {
         // console.log(error)
-        console.log(colors.red.bold('Hubo un error con la conexion'))
+        //console.log(colors.red.bold('Hubo un error con la conexion'))
     }
 }
 
@@ -25,6 +25,8 @@ server.use(express.json())
 
 server.use('/api/products', router)
 
-
+server.get('/api', (req, res) => {
+    res.json({msg: 'desde api'})
+})
 
 export default server
