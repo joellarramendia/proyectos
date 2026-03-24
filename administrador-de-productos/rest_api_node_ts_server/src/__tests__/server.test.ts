@@ -1,5 +1,6 @@
 import request from 'supertest'
-import server from '../server'
+import server, {connectDB} from '../server'
+import db from '../config/db'
 
 describe('GET /api', () =>{
     test('should send back a json response', async () => {
@@ -11,5 +12,20 @@ describe('GET /api', () =>{
 
         expect(res.status).not.toBe(404)
         expect(res.body.msg).not.toBe('Desde API')
+    })
+})
+
+jest.mock('../config/db')
+
+describe('connectDB', () => {
+    test('should hanlde database connection error', async () => {
+        jest.spyOn(db, 'authenticate').mockRejectedValueOnce(new Error('Hubo un error con la conexion'))
+        const consoleSpy = jest.spyOn(console, 'log')
+
+        await connectDB()
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Hubo un error con la conexion')
+        )
     })
 })
