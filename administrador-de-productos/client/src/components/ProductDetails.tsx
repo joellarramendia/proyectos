@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import type { Product } from "../types"
 import { formatCurrency } from "../utils"
 
@@ -7,6 +7,9 @@ type ProductDetailsProps = {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+
+    const navigate = useNavigate()
+
     const isAvailable = product.availability
     return (
         <tr className="border-b ">
@@ -21,12 +24,12 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             </td>
             <td className="p-3 text-lg text-gray-800 ">
                 <div className="flex gap-2 items-center">
-                    <Link 
-                    to={`/productos/${product.id}/editar`}
-                    className="bg-indigo-600 text-white rounded-lg w-full p-2 uppercase font-bold text-xs text-center"
+                    <button 
+                    onClick={() => navigate(`/productos/${product.id}/editar`)}
+                    className="bg-indigo-600 text-white rounded-lg w-full p-2 uppercase font-bold text-xs text-center cursor-pointer"
                     >
                         Editar
-                        </Link>
+                        </button>
                 </div>
             </td>
         </tr>
