@@ -4,7 +4,6 @@
   "description": "REST API's con Express y TypeScript",
   "license": "ISC",
   "author": "Joel Larramendia",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
